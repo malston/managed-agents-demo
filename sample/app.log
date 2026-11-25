@@ -1,0 +1,400 @@
+2026-11-24T09:00:11Z INFO  gateway GET /healthz 200 22ms req_id=r0000
+2026-11-24T09:00:29Z INFO  gateway GET /api/payments 200 133ms req_id=r0001
+2026-11-24T09:00:36Z ERROR orders-svc pq: too many connections for role "orders" req_id=r0002
+2026-11-24T09:00:50Z INFO  gateway GET /api/users 200 145ms req_id=r0003
+2026-11-24T09:01:04Z WARN  users-svc slow query 2.2s table=users req_id=r0004
+2026-11-24T09:01:12Z INFO  gateway GET /api/payments 200 151ms req_id=r0005
+2026-11-24T09:01:31Z INFO  gateway GET /api/users 200 146ms req_id=r0006
+2026-11-24T09:01:36Z INFO  gateway GET /api/users 200 150ms req_id=r0007
+2026-11-24T09:01:46Z INFO  gateway GET /api/users 200 152ms req_id=r0008
+2026-11-24T09:02:05Z INFO  gateway GET /api/cart 200 144ms req_id=r0009
+2026-11-24T09:02:08Z INFO  gateway GET /api/payments 200 131ms req_id=r0010
+2026-11-24T09:02:26Z INFO  gateway POST /api/cart 200 153ms req_id=r0011
+2026-11-24T09:02:41Z INFO  gateway GET /api/users 200 66ms req_id=r0012
+2026-11-24T09:02:44Z INFO  gateway POST /api/payments 200 91ms req_id=r0013
+2026-11-24T09:02:59Z INFO  gateway GET /api/orders 200 135ms req_id=r0014
+2026-11-24T09:03:13Z INFO  gateway GET /api/cart 200 129ms req_id=r0015
+2026-11-24T09:03:27Z ERROR orders-svc pq: too many connections for role "orders" req_id=r0016
+2026-11-24T09:03:30Z INFO  gateway POST /api/payments 200 91ms req_id=r0017
+2026-11-24T09:03:42Z INFO  gateway POST /api/payments 200 21ms req_id=r0018
+2026-11-24T09:03:45Z INFO  gateway GET /healthz 200 19ms req_id=r0019
+2026-11-24T09:03:55Z INFO  gateway POST /healthz 200 102ms req_id=r0020
+2026-11-24T09:04:07Z ERROR orders-svc pq: too many connections for role "orders" req_id=r0021
+2026-11-24T09:04:22Z INFO  gateway GET /api/payments 200 130ms req_id=r0022
+2026-11-24T09:04:24Z INFO  gateway GET /api/cart 200 67ms req_id=r0023
+2026-11-24T09:04:37Z INFO  gateway GET /healthz 200 46ms req_id=r0024
+2026-11-24T09:04:52Z INFO  gateway GET /api/cart 200 114ms req_id=r0025
+2026-11-24T09:05:10Z INFO  gateway POST /healthz 200 178ms req_id=r0026
+2026-11-24T09:05:23Z INFO  gateway GET /api/users 200 49ms req_id=r0027
+2026-11-24T09:05:28Z INFO  gateway GET /api/users 200 128ms req_id=r0028
+2026-11-24T09:05:47Z INFO  gateway GET /api/cart 200 41ms req_id=r0029
+2026-11-24T09:06:01Z INFO  gateway POST /api/payments 200 36ms req_id=r0030
+2026-11-24T09:06:18Z INFO  gateway POST /api/orders 200 178ms req_id=r0031
+2026-11-24T09:06:36Z INFO  gateway POST /healthz 200 30ms req_id=r0032
+2026-11-24T09:06:52Z INFO  gateway GET /api/orders 200 21ms req_id=r0033
+2026-11-24T09:06:59Z INFO  gateway POST /api/orders 200 157ms req_id=r0034
+2026-11-24T09:07:01Z INFO  gateway GET /api/payments 200 141ms req_id=r0035
+2026-11-24T09:07:05Z INFO  gateway GET /api/payments 200 22ms req_id=r0036
+2026-11-24T09:07:12Z INFO  gateway POST /api/users 200 92ms req_id=r0037
+2026-11-24T09:07:32Z INFO  gateway GET /api/orders 200 128ms req_id=r0038
+2026-11-24T09:07:47Z INFO  gateway GET /api/cart 200 40ms req_id=r0039
+2026-11-24T09:07:51Z INFO  gateway POST /api/cart 200 45ms req_id=r0040
+2026-11-24T09:08:08Z ERROR orders-svc pq: too many connections for role "orders" req_id=r0041
+2026-11-24T09:08:25Z INFO  gateway GET /api/payments 200 139ms req_id=r0042
+2026-11-24T09:08:35Z INFO  gateway POST /api/orders 200 136ms req_id=r0043
+2026-11-24T09:08:47Z INFO  gateway GET /api/cart 200 140ms req_id=r0044
+2026-11-24T09:09:05Z INFO  gateway GET /api/cart 200 160ms req_id=r0045
+2026-11-24T09:09:12Z INFO  gateway GET /healthz 200 55ms req_id=r0046
+2026-11-24T09:09:29Z INFO  gateway GET /api/orders 200 75ms req_id=r0047
+2026-11-24T09:09:45Z INFO  gateway POST /api/payments 200 118ms req_id=r0048
+2026-11-24T09:09:57Z INFO  gateway GET /api/cart 200 60ms req_id=r0049
+2026-11-24T09:10:01Z INFO  gateway POST /api/users 200 56ms req_id=r0050
+2026-11-24T09:10:17Z INFO  gateway GET /api/payments 200 126ms req_id=r0051
+2026-11-24T09:10:29Z INFO  gateway GET /api/orders 200 103ms req_id=r0052
+2026-11-24T09:10:36Z INFO  gateway POST /api/users 200 166ms req_id=r0053
+2026-11-24T09:10:47Z INFO  gateway POST /healthz 200 106ms req_id=r0054
+2026-11-24T09:10:50Z INFO  gateway GET /api/users 200 11ms req_id=r0055
+2026-11-24T09:10:55Z INFO  gateway GET /healthz 200 160ms req_id=r0056
+2026-11-24T09:11:15Z INFO  gateway GET /api/cart 200 144ms req_id=r0057
+2026-11-24T09:11:33Z INFO  gateway GET /api/orders 200 138ms req_id=r0058
+2026-11-24T09:11:38Z INFO  gateway GET /api/users 200 11ms req_id=r0059
+2026-11-24T09:11:47Z INFO  gateway GET /api/payments 200 154ms req_id=r0060
+2026-11-24T09:11:58Z INFO  gateway GET /healthz 200 19ms req_id=r0061
+2026-11-24T09:12:10Z INFO  gateway POST /api/payments 200 132ms req_id=r0062
+2026-11-24T09:12:15Z INFO  gateway GET /api/payments 200 116ms req_id=r0063
+2026-11-24T09:12:21Z INFO  gateway GET /api/users 200 40ms req_id=r0064
+2026-11-24T09:12:37Z INFO  gateway GET /api/orders 200 87ms req_id=r0065
+2026-11-24T09:12:54Z INFO  gateway GET /healthz 200 147ms req_id=r0066
+2026-11-24T09:12:56Z INFO  gateway GET /api/cart 200 29ms req_id=r0067
+2026-11-24T09:13:13Z INFO  gateway GET /api/orders 200 117ms req_id=r0068
+2026-11-24T09:13:24Z INFO  gateway GET /api/payments 200 74ms req_id=r0069
+2026-11-24T09:13:39Z INFO  gateway GET /healthz 200 137ms req_id=r0070
+2026-11-24T09:13:48Z INFO  gateway POST /api/users 200 39ms req_id=r0071
+2026-11-24T09:14:02Z INFO  gateway POST /healthz 200 22ms req_id=r0072
+2026-11-24T09:14:10Z INFO  gateway POST /api/users 200 35ms req_id=r0073
+2026-11-24T09:14:15Z INFO  gateway GET /api/cart 200 68ms req_id=r0074
+2026-11-24T09:14:20Z INFO  gateway GET /api/users 200 105ms req_id=r0075
+2026-11-24T09:14:36Z INFO  gateway GET /api/users 200 114ms req_id=r0076
+2026-11-24T09:14:53Z INFO  gateway GET /healthz 200 95ms req_id=r0077
+2026-11-24T09:15:04Z INFO  gateway GET /api/cart 200 90ms req_id=r0078
+2026-11-24T09:15:22Z INFO  gateway POST /api/orders 200 88ms req_id=r0079
+2026-11-24T09:15:39Z INFO  gateway GET /api/payments 200 32ms req_id=r0080
+2026-11-24T09:15:47Z INFO  gateway GET /api/orders 200 71ms req_id=r0081
+2026-11-24T09:15:56Z ERROR orders-svc pq: too many connections for role "orders" req_id=r0082
+2026-11-24T09:16:02Z INFO  gateway POST /api/users 200 177ms req_id=r0083
+2026-11-24T09:16:11Z INFO  gateway POST /api/payments 200 87ms req_id=r0084
+2026-11-24T09:16:14Z INFO  gateway POST /api/users 200 22ms req_id=r0085
+2026-11-24T09:16:23Z INFO  gateway POST /api/orders 200 25ms req_id=r0086
+2026-11-24T09:16:43Z INFO  gateway POST /api/orders 200 35ms req_id=r0087
+2026-11-24T09:16:58Z ERROR orders-svc pq: too many connections for role "orders" req_id=r0088
+2026-11-24T09:17:16Z INFO  gateway GET /api/cart 200 15ms req_id=r0089
+2026-11-24T09:17:33Z INFO  gateway GET /api/orders 200 71ms req_id=r0090
+2026-11-24T09:17:35Z INFO  gateway POST /api/cart 200 139ms req_id=r0091
+2026-11-24T09:17:42Z INFO  gateway GET /api/payments 200 73ms req_id=r0092
+2026-11-24T09:17:54Z INFO  gateway GET /api/cart 200 7ms req_id=r0093
+2026-11-24T09:17:55Z INFO  gateway GET /api/payments 200 135ms req_id=r0094
+2026-11-24T09:18:11Z INFO  gateway GET /healthz 200 172ms req_id=r0095
+2026-11-24T09:18:25Z INFO  gateway POST /api/payments 200 133ms req_id=r0096
+2026-11-24T09:18:35Z INFO  gateway POST /api/users 200 54ms req_id=r0097
+2026-11-24T09:18:40Z INFO  gateway GET /api/cart 200 37ms req_id=r0098
+2026-11-24T09:18:41Z ERROR cart-svc panic: runtime error: invalid memory address or nil pointer dereference req_id=r0099
+2026-11-24T09:18:50Z INFO  gateway GET /api/orders 200 174ms req_id=r0100
+2026-11-24T09:19:03Z INFO  gateway GET /api/cart 200 79ms req_id=r0101
+2026-11-24T09:19:05Z INFO  gateway POST /api/users 200 118ms req_id=r0102
+2026-11-24T09:19:06Z INFO  gateway POST /api/cart 200 66ms req_id=r0103
+2026-11-24T09:19:08Z INFO  gateway GET /api/cart 200 95ms req_id=r0104
+2026-11-24T09:19:14Z ERROR orders-svc pq: too many connections for role "orders" req_id=r0105
+2026-11-24T09:19:27Z INFO  gateway GET /api/cart 200 67ms req_id=r0106
+2026-11-24T09:19:44Z INFO  gateway POST /api/orders 200 26ms req_id=r0107
+2026-11-24T09:19:49Z INFO  gateway POST /api/orders 200 9ms req_id=r0108
+2026-11-24T09:19:59Z INFO  gateway GET /api/users 200 153ms req_id=r0109
+2026-11-24T09:20:16Z INFO  gateway POST /api/users 200 87ms req_id=r0110
+2026-11-24T09:20:32Z INFO  gateway GET /api/payments 200 15ms req_id=r0111
+2026-11-24T09:20:49Z INFO  gateway GET /api/payments 200 138ms req_id=r0112
+2026-11-24T09:21:06Z INFO  gateway GET /api/orders 200 25ms req_id=r0113
+2026-11-24T09:21:07Z WARN  users-svc slow query 2.6s table=users req_id=r0114
+2026-11-24T09:21:11Z INFO  gateway GET /healthz 200 164ms req_id=r0115
+2026-11-24T09:21:12Z INFO  gateway POST /api/users 200 71ms req_id=r0116
+2026-11-24T09:21:13Z INFO  gateway GET /api/orders 200 172ms req_id=r0117
+2026-11-24T09:21:30Z WARN  users-svc slow query 2.8s table=users req_id=r0118
+2026-11-24T09:21:39Z INFO  gateway GET /api/cart 200 56ms req_id=r0119
+2026-11-24T09:21:47Z INFO  gateway POST /healthz 200 101ms req_id=r0120
+2026-11-24T09:21:50Z INFO  gateway GET /api/cart 200 161ms req_id=r0121
+2026-11-24T09:21:57Z ERROR cart-svc panic: runtime error: invalid memory address or nil pointer dereference req_id=r0122
+2026-11-24T09:22:02Z INFO  gateway GET /api/cart 200 7ms req_id=r0123
+2026-11-24T09:22:18Z WARN  users-svc slow query 2.5s table=users req_id=r0124
+2026-11-24T09:22:22Z INFO  gateway POST /healthz 200 136ms req_id=r0125
+2026-11-24T09:22:32Z INFO  gateway GET /healthz 200 144ms req_id=r0126
+2026-11-24T09:22:39Z INFO  gateway POST /api/orders 200 8ms req_id=r0127
+2026-11-24T09:22:49Z INFO  gateway POST /api/payments 200 72ms req_id=r0128
+2026-11-24T09:23:02Z INFO  gateway GET /api/users 200 152ms req_id=r0129
+2026-11-24T09:23:05Z INFO  gateway POST /api/payments 200 96ms req_id=r0130
+2026-11-24T09:23:10Z INFO  gateway POST /api/payments 200 32ms req_id=r0131
+2026-11-24T09:23:22Z INFO  gateway POST /healthz 200 10ms req_id=r0132
+2026-11-24T09:23:28Z ERROR orders-svc pq: too many connections for role "orders" req_id=r0133
+2026-11-24T09:23:44Z INFO  gateway POST /healthz 200 40ms req_id=r0134
+2026-11-24T09:23:58Z INFO  gateway GET /api/cart 200 88ms req_id=r0135
+2026-11-24T09:23:59Z INFO  gateway POST /api/cart 200 34ms req_id=r0136
+2026-11-24T09:24:06Z INFO  gateway POST /api/cart 200 99ms req_id=r0137
+2026-11-24T09:24:09Z INFO  gateway GET /api/payments 200 96ms req_id=r0138
+2026-11-24T09:24:23Z INFO  gateway POST /api/orders 200 30ms req_id=r0139
+2026-11-24T09:24:25Z INFO  gateway GET /api/cart 200 67ms req_id=r0140
+2026-11-24T09:24:34Z INFO  gateway GET /api/cart 200 99ms req_id=r0141
+2026-11-24T09:24:48Z INFO  gateway GET /healthz 200 24ms req_id=r0142
+2026-11-24T09:24:50Z INFO  gateway POST /healthz 200 161ms req_id=r0143
+2026-11-24T09:24:55Z INFO  gateway POST /api/cart 200 16ms req_id=r0144
+2026-11-24T09:25:13Z INFO  gateway POST /healthz 200 91ms req_id=r0145
+2026-11-24T09:25:23Z INFO  gateway POST /api/cart 200 171ms req_id=r0146
+2026-11-24T09:25:31Z INFO  gateway POST /api/payments 200 34ms req_id=r0147
+2026-11-24T09:25:37Z INFO  gateway GET /api/orders 200 132ms req_id=r0148
+2026-11-24T09:25:53Z INFO  gateway POST /healthz 200 119ms req_id=r0149
+2026-11-24T09:26:07Z INFO  gateway GET /api/users 200 27ms req_id=r0150
+2026-11-24T09:26:13Z INFO  gateway POST /api/orders 200 65ms req_id=r0151
+2026-11-24T09:26:25Z INFO  gateway GET /api/payments 200 9ms req_id=r0152
+2026-11-24T09:26:39Z INFO  gateway GET /api/payments 200 100ms req_id=r0153
+2026-11-24T09:26:48Z INFO  gateway POST /api/orders 200 75ms req_id=r0154
+2026-11-24T09:27:07Z INFO  gateway GET /api/users 200 27ms req_id=r0155
+2026-11-24T09:27:16Z INFO  gateway POST /healthz 200 169ms req_id=r0156
+2026-11-24T09:27:31Z INFO  gateway GET /api/cart 200 36ms req_id=r0157
+2026-11-24T09:27:33Z INFO  gateway POST /healthz 200 4ms req_id=r0158
+2026-11-24T09:27:36Z INFO  gateway POST /api/payments 200 118ms req_id=r0159
+2026-11-24T09:27:44Z INFO  gateway GET /api/users 200 42ms req_id=r0160
+2026-11-24T09:28:01Z INFO  gateway POST /api/orders 200 25ms req_id=r0161
+2026-11-24T09:28:19Z INFO  gateway GET /api/orders 200 63ms req_id=r0162
+2026-11-24T09:28:38Z INFO  gateway GET /api/cart 200 164ms req_id=r0163
+2026-11-24T09:28:47Z INFO  gateway GET /healthz 200 29ms req_id=r0164
+2026-11-24T09:28:50Z INFO  gateway GET /api/payments 200 103ms req_id=r0165
+2026-11-24T09:28:59Z INFO  gateway GET /api/payments 200 6ms req_id=r0166
+2026-11-24T09:29:17Z INFO  gateway POST /healthz 200 84ms req_id=r0167
+2026-11-24T09:29:25Z INFO  gateway GET /api/users 200 11ms req_id=r0168
+2026-11-24T09:29:39Z INFO  gateway GET /api/cart 200 9ms req_id=r0169
+2026-11-24T09:29:46Z INFO  gateway GET /healthz 200 69ms req_id=r0170
+2026-11-24T09:29:54Z INFO  gateway GET /api/cart 200 130ms req_id=r0171
+2026-11-24T09:29:56Z INFO  gateway POST /healthz 200 178ms req_id=r0172
+2026-11-24T09:30:09Z INFO  gateway GET /api/cart 200 56ms req_id=r0173
+2026-11-24T09:30:25Z INFO  gateway GET /api/cart 200 63ms req_id=r0174
+2026-11-24T09:30:40Z INFO  gateway GET /api/cart 200 163ms req_id=r0175
+2026-11-24T09:30:56Z INFO  gateway POST /api/users 200 110ms req_id=r0176
+2026-11-24T09:30:58Z INFO  gateway POST /api/users 200 17ms req_id=r0177
+2026-11-24T09:31:05Z ERROR orders-svc pq: too many connections for role "orders" req_id=r0178
+2026-11-24T09:31:25Z INFO  gateway GET /api/orders 200 51ms req_id=r0179
+2026-11-24T09:31:38Z ERROR payments-svc upstream timeout calling stripe-gw after 30000ms path=/api/payments req_id=r0180
+2026-11-24T09:31:49Z INFO  gateway GET /api/orders 200 88ms req_id=r0181
+2026-11-24T09:31:56Z ERROR payments-svc upstream timeout calling stripe-gw after 30000ms path=/api/payments req_id=r0182
+2026-11-24T09:32:13Z INFO  gateway POST /api/orders 200 174ms req_id=r0183
+2026-11-24T09:32:26Z INFO  gateway POST /api/cart 200 47ms req_id=r0184
+2026-11-24T09:32:30Z ERROR payments-svc upstream timeout calling stripe-gw after 30000ms path=/api/payments req_id=r0185
+2026-11-24T09:32:39Z ERROR payments-svc upstream timeout calling stripe-gw after 30000ms path=/api/payments req_id=r0186
+2026-11-24T09:32:53Z INFO  gateway GET /api/orders 200 101ms req_id=r0187
+2026-11-24T09:33:05Z INFO  gateway POST /api/cart 200 26ms req_id=r0188
+2026-11-24T09:33:07Z INFO  gateway POST /api/users 200 142ms req_id=r0189
+2026-11-24T09:33:22Z ERROR payments-svc upstream timeout calling stripe-gw after 30000ms path=/api/payments req_id=r0190
+2026-11-24T09:33:34Z INFO  gateway GET /healthz 200 165ms req_id=r0191
+2026-11-24T09:33:48Z ERROR payments-svc upstream timeout calling stripe-gw after 30000ms path=/api/payments req_id=r0192
+2026-11-24T09:34:01Z ERROR payments-svc upstream timeout calling stripe-gw after 30000ms path=/api/payments req_id=r0193
+2026-11-24T09:34:03Z ERROR payments-svc upstream timeout calling stripe-gw after 30000ms path=/api/payments req_id=r0194
+2026-11-24T09:34:05Z ERROR payments-svc upstream timeout calling stripe-gw after 30000ms path=/api/payments req_id=r0195
+2026-11-24T09:34:08Z INFO  gateway POST /api/cart 200 73ms req_id=r0196
+2026-11-24T09:34:19Z INFO  gateway GET /api/payments 200 71ms req_id=r0197
+2026-11-24T09:34:30Z INFO  gateway GET /api/cart 200 156ms req_id=r0198
+2026-11-24T09:34:33Z ERROR payments-svc upstream timeout calling stripe-gw after 30000ms path=/api/payments req_id=r0199
+2026-11-24T09:34:41Z ERROR payments-svc upstream timeout calling stripe-gw after 30000ms path=/api/payments req_id=r0200
+2026-11-24T09:34:56Z INFO  gateway POST /healthz 200 114ms req_id=r0201
+2026-11-24T09:35:12Z ERROR payments-svc upstream timeout calling stripe-gw after 30000ms path=/api/payments req_id=r0202
+2026-11-24T09:35:28Z ERROR payments-svc upstream timeout calling stripe-gw after 30000ms path=/api/payments req_id=r0203
+2026-11-24T09:35:38Z INFO  gateway GET /api/users 200 87ms req_id=r0204
+2026-11-24T09:35:49Z ERROR payments-svc upstream timeout calling stripe-gw after 30000ms path=/api/payments req_id=r0205
+2026-11-24T09:36:09Z ERROR payments-svc upstream timeout calling stripe-gw after 30000ms path=/api/payments req_id=r0206
+2026-11-24T09:36:16Z ERROR payments-svc upstream timeout calling stripe-gw after 30000ms path=/api/payments req_id=r0207
+2026-11-24T09:36:22Z ERROR payments-svc upstream timeout calling stripe-gw after 30000ms path=/api/payments req_id=r0208
+2026-11-24T09:36:25Z INFO  gateway POST /healthz 200 45ms req_id=r0209
+2026-11-24T09:36:39Z INFO  gateway POST /api/orders 200 163ms req_id=r0210
+2026-11-24T09:36:42Z ERROR payments-svc upstream timeout calling stripe-gw after 30000ms path=/api/payments req_id=r0211
+2026-11-24T09:36:56Z ERROR payments-svc upstream timeout calling stripe-gw after 30000ms path=/api/payments req_id=r0212
+2026-11-24T09:37:11Z ERROR payments-svc upstream timeout calling stripe-gw after 30000ms path=/api/payments req_id=r0213
+2026-11-24T09:37:16Z ERROR payments-svc upstream timeout calling stripe-gw after 30000ms path=/api/payments req_id=r0214
+2026-11-24T09:37:36Z INFO  gateway GET /api/users 200 79ms req_id=r0215
+2026-11-24T09:37:46Z ERROR payments-svc upstream timeout calling stripe-gw after 30000ms path=/api/payments req_id=r0216
+2026-11-24T09:37:55Z ERROR payments-svc upstream timeout calling stripe-gw after 30000ms path=/api/payments req_id=r0217
+2026-11-24T09:38:04Z ERROR payments-svc upstream timeout calling stripe-gw after 30000ms path=/api/payments req_id=r0218
+2026-11-24T09:38:12Z ERROR payments-svc upstream timeout calling stripe-gw after 30000ms path=/api/payments req_id=r0219
+2026-11-24T09:38:20Z ERROR payments-svc upstream timeout calling stripe-gw after 30000ms path=/api/payments req_id=r0220
+2026-11-24T09:38:39Z ERROR payments-svc upstream timeout calling stripe-gw after 30000ms path=/api/payments req_id=r0221
+2026-11-24T09:38:42Z ERROR payments-svc upstream timeout calling stripe-gw after 30000ms path=/api/payments req_id=r0222
+2026-11-24T09:38:50Z ERROR payments-svc upstream timeout calling stripe-gw after 30000ms path=/api/payments req_id=r0223
+2026-11-24T09:38:58Z INFO  gateway POST /api/orders 200 13ms req_id=r0224
+2026-11-24T09:39:02Z ERROR payments-svc upstream timeout calling stripe-gw after 30000ms path=/api/payments req_id=r0225
+2026-11-24T09:39:10Z INFO  gateway GET /api/cart 200 79ms req_id=r0226
+2026-11-24T09:39:18Z ERROR payments-svc upstream timeout calling stripe-gw after 30000ms path=/api/payments req_id=r0227
+2026-11-24T09:39:25Z INFO  gateway GET /api/payments 200 23ms req_id=r0228
+2026-11-24T09:39:37Z ERROR payments-svc upstream timeout calling stripe-gw after 30000ms path=/api/payments req_id=r0229
+2026-11-24T09:39:43Z INFO  gateway GET /api/cart 200 31ms req_id=r0230
+2026-11-24T09:40:03Z INFO  gateway GET /api/cart 200 13ms req_id=r0231
+2026-11-24T09:40:15Z INFO  gateway GET /api/orders 200 69ms req_id=r0232
+2026-11-24T09:40:17Z INFO  gateway GET /api/users 200 87ms req_id=r0233
+2026-11-24T09:40:31Z INFO  gateway POST /api/users 200 23ms req_id=r0234
+2026-11-24T09:40:38Z ERROR orders-svc pq: too many connections for role "orders" req_id=r0235
+2026-11-24T09:40:54Z INFO  gateway POST /api/orders 200 29ms req_id=r0236
+2026-11-24T09:41:07Z INFO  gateway GET /api/users 200 171ms req_id=r0237
+2026-11-24T09:41:13Z INFO  gateway POST /api/cart 200 76ms req_id=r0238
+2026-11-24T09:41:23Z INFO  gateway POST /api/orders 200 149ms req_id=r0239
+2026-11-24T09:41:35Z INFO  gateway POST /api/orders 200 168ms req_id=r0240
+2026-11-24T09:41:42Z INFO  gateway GET /healthz 200 5ms req_id=r0241
+2026-11-24T09:41:56Z INFO  gateway GET /healthz 200 27ms req_id=r0242
+2026-11-24T09:42:09Z INFO  gateway POST /api/cart 200 45ms req_id=r0243
+2026-11-24T09:42:14Z ERROR orders-svc pq: too many connections for role "orders" req_id=r0244
+2026-11-24T09:42:32Z INFO  gateway GET /healthz 200 150ms req_id=r0245
+2026-11-24T09:42:52Z INFO  gateway GET /api/payments 200 41ms req_id=r0246
+2026-11-24T09:43:04Z INFO  gateway GET /api/payments 200 21ms req_id=r0247
+2026-11-24T09:43:08Z INFO  gateway POST /api/users 200 36ms req_id=r0248
+2026-11-24T09:43:10Z INFO  gateway POST /healthz 200 17ms req_id=r0249
+2026-11-24T09:43:30Z INFO  gateway GET /healthz 200 162ms req_id=r0250
+2026-11-24T09:43:36Z INFO  gateway POST /api/users 200 161ms req_id=r0251
+2026-11-24T09:43:43Z INFO  gateway GET /api/users 200 14ms req_id=r0252
+2026-11-24T09:43:56Z INFO  gateway POST /api/users 200 95ms req_id=r0253
+2026-11-24T09:44:00Z INFO  gateway GET /api/users 200 147ms req_id=r0254
+2026-11-24T09:44:02Z INFO  gateway GET /api/cart 200 103ms req_id=r0255
+2026-11-24T09:44:22Z INFO  gateway POST /api/cart 200 82ms req_id=r0256
+2026-11-24T09:44:41Z INFO  gateway POST /healthz 200 118ms req_id=r0257
+2026-11-24T09:44:58Z INFO  gateway GET /api/orders 200 162ms req_id=r0258
+2026-11-24T09:45:14Z INFO  gateway POST /healthz 200 49ms req_id=r0259
+2026-11-24T09:45:30Z INFO  gateway GET /api/orders 200 95ms req_id=r0260
+2026-11-24T09:45:44Z INFO  gateway GET /healthz 200 14ms req_id=r0261
+2026-11-24T09:45:49Z INFO  gateway GET /api/cart 200 17ms req_id=r0262
+2026-11-24T09:46:06Z INFO  gateway GET /api/users 200 20ms req_id=r0263
+2026-11-24T09:46:26Z INFO  gateway GET /api/orders 200 37ms req_id=r0264
+2026-11-24T09:46:42Z INFO  gateway GET /api/users 200 20ms req_id=r0265
+2026-11-24T09:46:54Z INFO  gateway GET /api/cart 200 86ms req_id=r0266
+2026-11-24T09:47:14Z INFO  gateway GET /healthz 200 69ms req_id=r0267
+2026-11-24T09:47:31Z INFO  gateway GET /healthz 200 155ms req_id=r0268
+2026-11-24T09:47:40Z INFO  gateway POST /api/users 200 99ms req_id=r0269
+2026-11-24T09:47:42Z INFO  gateway GET /healthz 200 166ms req_id=r0270
+2026-11-24T09:47:51Z INFO  gateway GET /healthz 200 71ms req_id=r0271
+2026-11-24T09:47:55Z INFO  gateway POST /api/orders 200 119ms req_id=r0272
+2026-11-24T09:48:13Z INFO  gateway POST /api/orders 200 141ms req_id=r0273
+2026-11-24T09:48:26Z INFO  gateway POST /api/cart 200 100ms req_id=r0274
+2026-11-24T09:48:38Z INFO  gateway POST /api/cart 200 24ms req_id=r0275
+2026-11-24T09:48:53Z INFO  gateway GET /api/payments 200 79ms req_id=r0276
+2026-11-24T09:49:10Z INFO  gateway POST /api/payments 200 4ms req_id=r0277
+2026-11-24T09:49:12Z INFO  gateway POST /api/cart 200 110ms req_id=r0278
+2026-11-24T09:49:29Z INFO  gateway GET /api/orders 200 129ms req_id=r0279
+2026-11-24T09:49:37Z INFO  gateway GET /api/orders 200 17ms req_id=r0280
+2026-11-24T09:49:38Z INFO  gateway GET /api/cart 200 137ms req_id=r0281
+2026-11-24T09:49:50Z INFO  gateway POST /healthz 200 154ms req_id=r0282
+2026-11-24T09:49:55Z INFO  gateway POST /api/payments 200 44ms req_id=r0283
+2026-11-24T09:50:00Z ERROR orders-svc pq: too many connections for role "orders" req_id=r0284
+2026-11-24T09:50:08Z INFO  gateway GET /healthz 200 20ms req_id=r0285
+2026-11-24T09:50:13Z INFO  gateway POST /api/cart 200 71ms req_id=r0286
+2026-11-24T09:50:14Z WARN  users-svc slow query 2.9s table=users req_id=r0287
+2026-11-24T09:50:26Z INFO  gateway POST /api/payments 200 158ms req_id=r0288
+2026-11-24T09:50:43Z INFO  gateway GET /api/users 200 4ms req_id=r0289
+2026-11-24T09:50:45Z WARN  users-svc slow query 2.1s table=users req_id=r0290
+2026-11-24T09:50:58Z INFO  gateway GET /api/users 200 30ms req_id=r0291
+2026-11-24T09:50:59Z INFO  gateway GET /api/users 200 109ms req_id=r0292
+2026-11-24T09:51:06Z INFO  gateway POST /api/payments 200 160ms req_id=r0293
+2026-11-24T09:51:12Z INFO  gateway POST /api/orders 200 164ms req_id=r0294
+2026-11-24T09:51:14Z INFO  gateway GET /healthz 200 100ms req_id=r0295
+2026-11-24T09:51:28Z INFO  gateway GET /healthz 200 171ms req_id=r0296
+2026-11-24T09:51:43Z INFO  gateway POST /api/orders 200 63ms req_id=r0297
+2026-11-24T09:51:45Z INFO  gateway GET /api/cart 200 72ms req_id=r0298
+2026-11-24T09:52:03Z INFO  gateway POST /api/payments 200 79ms req_id=r0299
+2026-11-24T09:52:10Z INFO  gateway GET /api/payments 200 47ms req_id=r0300
+2026-11-24T09:52:19Z INFO  gateway GET /api/users 200 87ms req_id=r0301
+2026-11-24T09:52:26Z INFO  gateway GET /api/cart 200 101ms req_id=r0302
+2026-11-24T09:52:44Z INFO  gateway GET /api/payments 200 10ms req_id=r0303
+2026-11-24T09:52:58Z INFO  gateway POST /api/users 200 58ms req_id=r0304
+2026-11-24T09:53:11Z INFO  gateway GET /api/orders 200 41ms req_id=r0305
+2026-11-24T09:53:13Z ERROR orders-svc pq: too many connections for role "orders" req_id=r0306
+2026-11-24T09:53:17Z INFO  gateway POST /api/users 200 40ms req_id=r0307
+2026-11-24T09:53:18Z ERROR orders-svc pq: too many connections for role "orders" req_id=r0308
+2026-11-24T09:53:23Z INFO  gateway GET /api/orders 200 15ms req_id=r0309
+2026-11-24T09:53:26Z INFO  gateway GET /api/cart 200 140ms req_id=r0310
+2026-11-24T09:53:29Z INFO  gateway GET /healthz 200 67ms req_id=r0311
+2026-11-24T09:53:36Z INFO  gateway GET /api/orders 200 166ms req_id=r0312
+2026-11-24T09:53:39Z INFO  gateway POST /api/cart 200 29ms req_id=r0313
+2026-11-24T09:53:44Z INFO  gateway POST /api/users 200 85ms req_id=r0314
+2026-11-24T09:53:55Z INFO  gateway POST /api/orders 200 69ms req_id=r0315
+2026-11-24T09:54:05Z WARN  users-svc slow query 2.6s table=users req_id=r0316
+2026-11-24T09:54:16Z INFO  gateway POST /api/payments 200 77ms req_id=r0317
+2026-11-24T09:54:36Z INFO  gateway GET /healthz 200 115ms req_id=r0318
+2026-11-24T09:54:53Z INFO  gateway POST /api/cart 200 16ms req_id=r0319
+2026-11-24T09:55:11Z INFO  gateway POST /api/orders 200 47ms req_id=r0320
+2026-11-24T09:55:25Z ERROR orders-svc pq: too many connections for role "orders" req_id=r0321
+2026-11-24T09:55:32Z INFO  gateway GET /api/orders 200 93ms req_id=r0322
+2026-11-24T09:55:48Z INFO  gateway POST /api/users 200 155ms req_id=r0323
+2026-11-24T09:56:00Z INFO  gateway POST /api/payments 200 151ms req_id=r0324
+2026-11-24T09:56:06Z INFO  gateway GET /api/users 200 131ms req_id=r0325
+2026-11-24T09:56:12Z INFO  gateway POST /api/orders 200 147ms req_id=r0326
+2026-11-24T09:56:16Z INFO  gateway GET /api/cart 200 106ms req_id=r0327
+2026-11-24T09:56:29Z INFO  gateway POST /api/orders 200 169ms req_id=r0328
+2026-11-24T09:56:30Z INFO  gateway POST /api/cart 200 113ms req_id=r0329
+2026-11-24T09:56:48Z INFO  gateway GET /healthz 200 121ms req_id=r0330
+2026-11-24T09:56:53Z INFO  gateway GET /api/payments 200 93ms req_id=r0331
+2026-11-24T09:57:12Z INFO  gateway POST /api/users 200 173ms req_id=r0332
+2026-11-24T09:57:30Z INFO  gateway POST /api/users 200 116ms req_id=r0333
+2026-11-24T09:57:39Z INFO  gateway POST /api/users 200 122ms req_id=r0334
+2026-11-24T09:57:47Z INFO  gateway POST /api/cart 200 162ms req_id=r0335
+2026-11-24T09:57:52Z INFO  gateway POST /api/users 200 158ms req_id=r0336
+2026-11-24T09:58:09Z INFO  gateway POST /api/users 200 52ms req_id=r0337
+2026-11-24T09:58:18Z INFO  gateway GET /api/orders 200 172ms req_id=r0338
+2026-11-24T09:58:22Z INFO  gateway GET /api/users 200 81ms req_id=r0339
+2026-11-24T09:58:32Z INFO  gateway GET /api/users 200 167ms req_id=r0340
+2026-11-24T09:58:36Z INFO  gateway POST /healthz 200 12ms req_id=r0341
+2026-11-24T09:58:37Z INFO  gateway GET /healthz 200 132ms req_id=r0342
+2026-11-24T09:58:47Z INFO  gateway POST /api/users 200 158ms req_id=r0343
+2026-11-24T09:59:00Z ERROR orders-svc pq: too many connections for role "orders" req_id=r0344
+2026-11-24T09:59:08Z INFO  gateway POST /healthz 200 62ms req_id=r0345
+2026-11-24T09:59:27Z INFO  gateway GET /api/users 200 120ms req_id=r0346
+2026-11-24T09:59:41Z INFO  gateway POST /api/orders 200 66ms req_id=r0347
+2026-11-24T09:59:54Z INFO  gateway POST /api/users 200 112ms req_id=r0348
+2026-11-24T10:00:10Z INFO  gateway POST /api/payments 200 136ms req_id=r0349
+2026-11-24T10:00:16Z INFO  gateway GET /api/cart 200 103ms req_id=r0350
+2026-11-24T10:00:32Z INFO  gateway GET /api/orders 200 68ms req_id=r0351
+2026-11-24T10:00:50Z INFO  gateway POST /api/users 200 29ms req_id=r0352
+2026-11-24T10:01:09Z INFO  gateway POST /api/users 200 135ms req_id=r0353
+2026-11-24T10:01:10Z INFO  gateway POST /api/cart 200 109ms req_id=r0354
+2026-11-24T10:01:25Z INFO  gateway POST /api/users 200 135ms req_id=r0355
+2026-11-24T10:01:29Z INFO  gateway POST /api/payments 200 167ms req_id=r0356
+2026-11-24T10:01:31Z INFO  gateway POST /healthz 200 19ms req_id=r0357
+2026-11-24T10:01:32Z ERROR cart-svc panic: runtime error: invalid memory address or nil pointer dereference req_id=r0358
+2026-11-24T10:01:46Z INFO  gateway POST /api/cart 200 31ms req_id=r0359
+2026-11-24T10:01:54Z INFO  gateway GET /healthz 200 104ms req_id=r0360
+2026-11-24T10:02:09Z INFO  gateway GET /api/users 200 166ms req_id=r0361
+2026-11-24T10:02:16Z INFO  gateway GET /api/payments 200 41ms req_id=r0362
+2026-11-24T10:02:28Z INFO  gateway POST /healthz 200 79ms req_id=r0363
+2026-11-24T10:02:46Z INFO  gateway POST /healthz 200 62ms req_id=r0364
+2026-11-24T10:02:55Z INFO  gateway POST /api/cart 200 177ms req_id=r0365
+2026-11-24T10:03:01Z INFO  gateway POST /api/cart 200 66ms req_id=r0366
+2026-11-24T10:03:11Z INFO  gateway POST /healthz 200 163ms req_id=r0367
+2026-11-24T10:03:14Z INFO  gateway GET /api/cart 200 81ms req_id=r0368
+2026-11-24T10:03:27Z WARN  users-svc slow query 2.6s table=users req_id=r0369
+2026-11-24T10:03:32Z INFO  gateway GET /api/cart 200 172ms req_id=r0370
+2026-11-24T10:03:33Z INFO  gateway POST /api/orders 200 68ms req_id=r0371
+2026-11-24T10:03:53Z INFO  gateway GET /api/users 200 51ms req_id=r0372
+2026-11-24T10:04:08Z INFO  gateway GET /api/users 200 107ms req_id=r0373
+2026-11-24T10:04:26Z INFO  gateway GET /api/payments 200 175ms req_id=r0374
+2026-11-24T10:04:44Z INFO  gateway GET /api/cart 200 130ms req_id=r0375
+2026-11-24T10:04:51Z INFO  gateway GET /healthz 200 146ms req_id=r0376
+2026-11-24T10:04:55Z INFO  gateway GET /api/users 200 125ms req_id=r0377
+2026-11-24T10:05:11Z INFO  gateway POST /healthz 200 40ms req_id=r0378
+2026-11-24T10:05:27Z INFO  gateway GET /api/users 200 45ms req_id=r0379
+2026-11-24T10:05:38Z INFO  gateway POST /api/payments 200 174ms req_id=r0380
+2026-11-24T10:05:48Z INFO  gateway POST /api/cart 200 111ms req_id=r0381
+2026-11-24T10:05:51Z INFO  gateway GET /api/cart 200 9ms req_id=r0382
+2026-11-24T10:06:11Z WARN  users-svc slow query 2.6s table=users req_id=r0383
+2026-11-24T10:06:15Z INFO  gateway GET /healthz 200 12ms req_id=r0384
+2026-11-24T10:06:22Z INFO  gateway POST /api/users 200 28ms req_id=r0385
+2026-11-24T10:06:34Z INFO  gateway GET /api/payments 200 76ms req_id=r0386
+2026-11-24T10:06:48Z INFO  gateway GET /api/cart 200 78ms req_id=r0387
+2026-11-24T10:06:58Z INFO  gateway POST /healthz 200 89ms req_id=r0388
+2026-11-24T10:07:15Z INFO  gateway POST /api/payments 200 56ms req_id=r0389
+2026-11-24T10:07:31Z INFO  gateway GET /api/cart 200 85ms req_id=r0390
+2026-11-24T10:07:41Z INFO  gateway GET /api/orders 200 106ms req_id=r0391
+2026-11-24T10:07:59Z INFO  gateway GET /api/payments 200 106ms req_id=r0392
+2026-11-24T10:08:09Z INFO  gateway GET /api/orders 200 125ms req_id=r0393
+2026-11-24T10:08:29Z INFO  gateway POST /api/orders 200 161ms req_id=r0394
+2026-11-24T10:08:34Z INFO  gateway GET /api/payments 200 58ms req_id=r0395
+2026-11-24T10:08:36Z INFO  gateway GET /healthz 200 29ms req_id=r0396
+2026-11-24T10:08:42Z INFO  gateway GET /healthz 200 171ms req_id=r0397
+2026-11-24T10:08:43Z INFO  gateway POST /api/users 200 147ms req_id=r0398
+2026-11-24T10:08:52Z INFO  gateway POST /api/users 200 12ms req_id=r0399
