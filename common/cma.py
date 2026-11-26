@@ -13,7 +13,10 @@ import time
 from dataclasses import dataclass, field
 
 import anthropic
-from anthropic.types.beta.sessions import BetaManagedAgentsAgentToolUseEvent
+from anthropic.types.beta.sessions import (
+    BetaManagedAgentsAgentToolUseEvent,
+    BetaManagedAgentsUserDefineOutcomeEventParams,
+)
 from anthropic.types.beta.sessions.beta_managed_agents_user_message_event_params import (
     Content as MessageContent,  # re-exported for demo 6
 )
@@ -68,19 +71,36 @@ class SessionResult:
     tool_calls: int = 0
     turns: int = 0
     agent_text: list[str] = field(default_factory=list)
+    # Outcomes only: one entry per grader pass, and the grader's token usage.
+    outcome_results: list[str] = field(default_factory=list)
+    grader_input_tokens: int = 0
+    grader_output_tokens: int = 0
+    grader_cache_read_tokens: int = 0
+    grader_cache_write_tokens: int = 0
 
 
 def stream_session(
-    client: anthropic.Anthropic, session_id: str, content: list[MessageContent]
+    client: anthropic.Anthropic,
+    session_id: str,
+    content: list[MessageContent] | None = None,
+    outcome: BetaManagedAgentsUserDefineOutcomeEventParams | None = None,
 ) -> SessionResult:
-    """Send one user message, print events until the agent stops, and return what happened."""
+    """Start the agent, print events until it stops, and return what happened.
+
+    Pass `content` for a plain user message, or `outcome` to define an outcome
+    instead. With an outcome the agent starts on its own, and a separate grader
+    scores each draft against the rubric until it passes or runs out of tries.
+    """
     result = SessionResult(stop_reason="stream_closed")
     # Open the stream first, then send, so no early events are missed.
     with client.beta.sessions.events.stream(session_id) as stream:
-        client.beta.sessions.events.send(
-            session_id,
-            events=[{"type": "user.message", "content": content}],
-        )
+        if outcome is not None:
+            client.beta.sessions.events.send(session_id, events=[outcome])
+        else:
+            client.beta.sessions.events.send(
+                session_id,
+                events=[{"type": "user.message", "content": content or []}],
+            )
         for event in stream:
             if event.type == "agent.message":
                 result.turns += 1
@@ -101,6 +121,23 @@ def stream_session(
                             "result": "allow" if approve(event) else "deny",
                         }],
                     )
+            elif event.type == "span.outcome_evaluation_start":
+                print(f"\n[grader] iteration {event.iteration}: evaluation started", flush=True)
+            elif event.type == "span.outcome_evaluation_ongoing":
+                print(".", end="", flush=True)  # heartbeat; the grader's reasoning isn't shown
+            elif event.type == "span.outcome_evaluation_end":
+                result.outcome_results.append(event.result)
+                usage = event.usage
+                result.grader_input_tokens += usage.input_tokens
+                result.grader_output_tokens += usage.output_tokens
+                result.grader_cache_read_tokens += usage.cache_read_input_tokens
+                result.grader_cache_write_tokens += usage.cache_creation_input_tokens
+                print(
+                    f"\n[grader] iteration {event.iteration}: {event.result} "
+                    f"({usage.input_tokens:,} in, {usage.output_tokens:,} out)\n"
+                    f"[grader] {event.explanation}",
+                    flush=True,
+                )
             elif event.type == "session.error":
                 print(f"\n[error] {event.error}", file=sys.stderr)
             elif event.type == "session.status_idle":
@@ -134,6 +171,12 @@ def session_metrics(
         tool_calls=result.tool_calls,
         model_calls=result.turns,
         notes=f"stop reason: {result.stop_reason}",
+        outcome_result=result.outcome_results[-1] if result.outcome_results else None,
+        grader_passes=len(result.outcome_results) or None,
+        grader_input_tokens=result.grader_input_tokens,
+        grader_output_tokens=result.grader_output_tokens,
+        grader_cache_read_tokens=result.grader_cache_read_tokens,
+        grader_cache_write_tokens=result.grader_cache_write_tokens,
     )
     usage = client.beta.sessions.retrieve(session_id).usage
     if usage is None:

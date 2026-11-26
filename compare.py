@@ -29,7 +29,7 @@ def aws_ready() -> str | None:
     if os.environ.get("AWS_BEARER_TOKEN_BEDROCK"):
         return None
     try:
-        import boto3  # installed with anthropic[bedrock]
+        import boto3  # type: ignore[import-untyped, import-not-found, unused-ignore]  # installed with anthropic[bedrock]
     except ImportError:
         return 'boto3 missing: pip install "anthropic[bedrock]"'
     if boto3.Session().get_credentials() is None:
@@ -86,8 +86,18 @@ def money(value: float | None) -> str:
     return "-" if value is None else f"${value:.4f}"
 
 
+def outcome_cell(metrics: RunMetrics) -> str:
+    """Grader result, revisions and grader tokens, for runs that defined an outcome."""
+    if not metrics.grader_passes:
+        return "-"
+    return (
+        f"{metrics.outcome_result}, {metrics.grader_passes - 1} revision(s), grader "
+        f"{metrics.grader_input_tokens:,} in / {metrics.grader_output_tokens:,} out"
+    )
+
+
 def print_table(rows: list[tuple[Option, RunMetrics | None, str]]) -> None:
-    header = f"{'option':<38} {'status':<8} {'secs':>6} {'in':>8} {'out':>7} {'cache rd':>9} {'calls':>5} {'tools':>5} {'est. cost':>10} {'reported':>10}"
+    header = f"{'option':<38} {'status':<8} {'secs':>6} {'in':>8} {'out':>7} {'cache rd':>9} {'calls':>5} {'tools':>5} {'est. cost':>10} {'reported':>10}  outcome"
     print("\n" + header)
     print("-" * len(header))
     for option, metrics, status in rows:
@@ -99,11 +109,14 @@ def print_table(rows: list[tuple[Option, RunMetrics | None, str]]) -> None:
             f"{metrics.output_tokens:>7,} {metrics.cache_read_tokens:>9,} "
             f"{metrics.model_calls if metrics.model_calls is not None else '-':>5} "
             f"{metrics.tool_calls if metrics.tool_calls is not None else '-':>5} "
-            f"{money(metrics.estimated_cost_usd()):>10} {money(metrics.reported_cost_usd):>10}"
+            f"{money(metrics.estimated_cost_usd()):>10} {money(metrics.reported_cost_usd):>10}  "
+            f"{outcome_cell(metrics)}"
         )
     print(
         "\nest. cost: tokens at Claude API list price for Claude Opus 5.5, plus $0.08 per session-hour"
         "\nfor options 4 and 5. Bedrock bills at AWS prices. reported: the platform's own number, if any."
+        "\noutcome: option 4's grader. Its tokens are shown apart and left out of est. cost, because the"
+        "\ndocs don't say whether session usage already counts them."
     )
 
 

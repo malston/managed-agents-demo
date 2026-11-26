@@ -40,6 +40,15 @@ class RunMetrics:
     reported_cost_usd: float | None = None  # what the platform itself reported, if anything
     report_path: str | None = None
     notes: str = ""
+    # Managed Agents outcomes (option 4). The grader's usage comes from its own
+    # span.outcome_evaluation_end events. The docs don't say whether session usage
+    # already includes it, so it's kept apart and left out of the estimate.
+    outcome_result: str | None = None  # result of the last grader pass
+    grader_passes: int | None = None  # 1 = passed or stopped on the first draft
+    grader_input_tokens: int = 0
+    grader_output_tokens: int = 0
+    grader_cache_read_tokens: int = 0
+    grader_cache_write_tokens: int = 0
 
     def token_cost_usd(self) -> float:
         return (
@@ -77,6 +86,15 @@ class RunMetrics:
             print(f"Model calls:    {self.model_calls}")
         if self.tool_calls is not None:
             print(f"Tool calls:     {self.tool_calls}")
+        if self.grader_passes:
+            print(
+                f"Outcome:        {self.outcome_result} after {self.grader_passes} grader pass(es), "
+                f"{self.grader_passes - 1} revision(s)"
+            )
+            print(
+                f"Grader tokens:  {self.grader_input_tokens:,} in, {self.grader_output_tokens:,} out, "
+                f"{self.grader_cache_read_tokens:,} cache read, {self.grader_cache_write_tokens:,} cache write"
+            )
         print(f"Estimated cost: ${self.estimated_cost_usd():.4f} (Claude API list price)")
         if self.reported_cost_usd is not None:
             print(f"Reported cost:  ${self.reported_cost_usd:.4f}")

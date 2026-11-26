@@ -134,6 +134,67 @@ class AgentLoopTest(unittest.TestCase):
         self.assertIn('"lines": 400', str(tool_result["content"]))
 
 
+class FakeSessions:
+    """Stands in for client.beta.sessions: records sent events, replays a fixed stream."""
+
+    def __init__(self, stream_events: list[Any]) -> None:
+        self.sent: list[Any] = []
+        self._stream_events = stream_events
+        self.events = self
+
+    def send(self, session_id: str, events: list[Any]) -> None:
+        self.sent.extend(events)
+
+    def stream(self, session_id: str) -> Any:
+        events = self._stream_events
+
+        class Stream:
+            def __enter__(self) -> list[Any]:
+                return events
+
+            def __exit__(self, *args: object) -> None:
+                pass
+
+        return Stream()
+
+
+class OutcomeStreamTest(unittest.TestCase):
+    def test_grader_events_are_counted(self) -> None:
+        from types import SimpleNamespace
+
+        from common.cma import stream_session
+
+        def usage(i: int, o: int) -> SimpleNamespace:
+            return SimpleNamespace(
+                input_tokens=i, output_tokens=o, cache_read_input_tokens=10, cache_creation_input_tokens=0
+            )
+
+        events = [
+            SimpleNamespace(type="span.outcome_evaluation_start", iteration=0),
+            SimpleNamespace(type="span.outcome_evaluation_ongoing", iteration=0),
+            SimpleNamespace(type="span.outcome_evaluation_end", iteration=0, result="needs_revision",
+                            explanation="No severity on issues.", usage=usage(2000, 300)),
+            SimpleNamespace(type="span.outcome_evaluation_start", iteration=1),
+            SimpleNamespace(type="span.outcome_evaluation_end", iteration=1, result="satisfied",
+                            explanation="All criteria met.", usage=usage(2500, 200)),
+            SimpleNamespace(type="session.status_idle", stop_reason=SimpleNamespace(type="end_turn")),
+        ]
+        sessions = FakeSessions(events)
+        client: Any = SimpleNamespace(beta=SimpleNamespace(sessions=sessions))
+        outcome: Any = {"type": "user.define_outcome", "description": "d", "rubric": {"type": "text", "content": "r"}}
+        result = stream_session(client, "sesn_test", outcome=outcome)
+
+        self.assertEqual(sessions.sent, [outcome])  # the outcome is the kickoff; no user.message
+        self.assertEqual(result.outcome_results, ["needs_revision", "satisfied"])
+        self.assertEqual((result.grader_input_tokens, result.grader_output_tokens), (4500, 500))
+        self.assertEqual(result.stop_reason, "end_turn")
+
+    def test_rubric_covers_the_asked_criteria(self) -> None:
+        rubric = (REPO / "4-managed-agents-cloud" / "rubric.md").read_text().lower()
+        for criterion in ("root cause", "log lines cited", "severity", "next action"):
+            self.assertIn(criterion, rubric)
+
+
 class MetricsTest(unittest.TestCase):
     def test_cost_and_round_trip(self) -> None:
         metrics = RunMetrics(option="x", seconds=1.0, input_tokens=1_000_000, output_tokens=100_000, runtime_seconds=3600)

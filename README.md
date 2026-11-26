@@ -126,5 +126,7 @@ tests/             offline tests: python -m unittest discover tests
 `python -m unittest discover tests` runs without credentials. It checks the log
 helpers against the sample, and runs option 2's full agent loop against a fake
 Bedrock endpoint to confirm the tools, tool results and usage counting work.
+It also replays a fake option 4 event stream with two grader passes to check
+the outcome is sent as the kickoff and the grader's tokens are summed.
 None of the six options has been run against live Bedrock or Managed Agents from
 this repo yet.
