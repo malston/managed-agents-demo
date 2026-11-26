@@ -1,0 +1,18 @@
+# Merge this block into the server's settings file:
+#   Docker Compose: compose/compose.config.yaml in the extracted release archive
+#   Kubernetes:     the server.config value of the server Helm chart
+# Keys come from the Inference provider page, checked 2026-11-26:
+#   https://platform.claude.com/docs/en/managed-agents/self-hosted/inference-provider
+# The server refuses to start on an unknown key, so check your release's
+# cma-server.example.yaml and operator-guide.md before you add anything else.
+
+inference:
+  provider: bedrock
+  region: us-east-1
+  # The server adds "us.anthropic." to each model ID (a US cross-region inference
+  # profile) and calls Bedrock's InvokeModel API. Agents keep plain Claude IDs
+  # such as claude-opus-5-5. To use global profiles instead:
+  #model_id_prefix: global.anthropic.
+  # If your account serves a model under a different ID, map it here:
+  #model_id_overrides:
+  #  claude-opus-5-5: us.anthropic.claude-opus-5-5

@@ -1,0 +1,20 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "InvokeClaude",
+      "Effect": "Allow",
+      "Action": ["bedrock:InvokeModel", "bedrock:InvokeModelWithResponseStream"],
+      "Resource": [
+        "arn:aws:bedrock:*:*:inference-profile/*",
+        "arn:aws:bedrock:*::foundation-model/*"
+      ]
+    },
+    {
+      "Sid": "ListModelsSoNewerModelsWork",
+      "Effect": "Allow",
+      "Action": ["bedrock:ListFoundationModels", "bedrock:ListInferenceProfiles"],
+      "Resource": "*"
+    }
+  ]
+}

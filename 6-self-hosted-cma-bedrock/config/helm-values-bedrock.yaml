@@ -1,0 +1,11 @@
+# Excerpt for the cma-server Helm chart's values file (Kubernetes / EKS).
+# The chart passes no AWS variables to the server, so give it a workload
+# identity: an IRSA- or Pod Identity-enabled service account whose IAM role has
+# the policy in bedrock-iam-policy.json. The chart's values.yaml names the
+# annotation to use. Check it against your release before you apply this.
+server:
+  serviceAccountName: cma-server-bedrock
+  config:
+    inference:
+      provider: bedrock
+      region: us-east-1
