@@ -2,6 +2,29 @@
 
 **A ready-made agent harness that you host.**
 
+## Choose this when
+
+**Deciding factor: open-ended file and shell work, or reusing a Claude Code setup.**
+
+- The agent has to explore a codebase or a folder, edit files and run commands.
+  Read, Grep, Glob, Edit, Write and Bash come built in. [`fix.py`](fix.py) fixes a
+  real bug with no tool code at all.
+- Your team already uses Claude Code. The SDK loads the repo's `CLAUDE.md` and
+  `.claude/skills/` the same way, so the agent follows the same house rules.
+- You need guard rails without writing tools: permission rules, hooks,
+  `max_turns`, `max_budget_usd`, and automatic compaction for long runs.
+- Model calls must stay on Bedrock.
+
+## Don't choose this when
+
+- The job is a fixed pipeline. Option 1 is simpler and cheaper.
+- You don't want to host and isolate a process that runs a real shell. Option 4
+  hosts it for you, off Bedrock.
+- You need many long-running sessions with stored history and a session viewer.
+  That's what Managed Agents adds (options 4 to 6).
+
+## How it works
+
 The Agent SDK is the Claude Code engine as a library. You give it a prompt, a
 working folder and a permission policy. It brings the agent loop, context
 management, and built-in tools: Read, Grep, Glob, Bash, Write and more. The tools
@@ -49,6 +72,43 @@ This run is built to work with nobody watching:
 Read [Configure permissions](https://code.claude.com/docs/en/agent-sdk/permissions)
 before you change these. In `bypassPermissions` mode, `allowed_tools` no longer
 limits anything.
+
+## The code-fix scenario: built-in tools plus policy
+
+[`fix.py`](fix.py) runs the same job as option 2's `fix.py`. The agent gets the
+log and the source of [`sample/payments-svc`](../sample/payments-svc/), finds the
+code behind the top error, writes a failing test, fixes the bug and runs the
+tests until they pass.
+
+```bash
+python 3-agent-sdk/fix.py                 # works in out/3-agent-sdk/fix-workspace/
+python 3-agent-sdk/fix.py --max-budget 1.50
+```
+
+There's no tool code. What you write is policy:
+
+| Setting | What it does here |
+|---|---|
+| `allowed_tools` | Read, Grep, Glob, `Edit(/**)` for the workspace, and `Bash(python -m unittest *)`, so the shell can run the tests and nothing else |
+| `permission_mode="dontAsk"` | Anything not allowed is denied, with nobody watching |
+| PreToolUse hook | Denies edits to `settings.py`, which CLAUDE.md asks the agent to leave alone |
+| PostToolUse hook | Records every file the agent changed, printed at the end |
+| PreCompact hook | Prints when the SDK summarizes a long context and carries on |
+| `max_turns=40`, `max_budget_usd` | Hard stops |
+| `setting_sources=["project"]` | Loads the service's own [`CLAUDE.md`](../sample/payments-svc/CLAUDE.md) |
+| `skills=["fix-regression"]` | Loads the team's [skill](../sample/payments-svc/.claude/skills/fix-regression/SKILL.md) from `.claude/skills/` |
+| `system_prompt` preset `claude_code` | The same system prompt your developers get in Claude Code |
+
+The CLAUDE.md and the skill are files a team already keeps in its repo for
+Claude Code. The SDK picks them up as they are. Option 2 would need code to
+read and apply them.
+
+One caution: the Bash tool runs with this process's environment, which holds
+your AWS credentials for Bedrock. The permission rule limits what can run, but
+for code you don't trust, run the SDK in a container with its own short-lived
+credentials.
+
+At the end, `common/codefix.py` checks the result the same way as option 2.
 
 ## Requirements
 

@@ -9,6 +9,13 @@ Self-hosted environments don't accept file mounts, so this script copies the
 log into the worker's folder, the way real data would already live next to
 the worker.
 
+It also starts private_api.py, a deploy history service that listens on
+127.0.0.1 only. The task asks the agent to curl it, to match the error spike to
+a deploy. That call works because the tools run on your side. It's the reason to
+pick this option: tools that need your private network. (The script assumes the
+worker runs on this machine. In real use, the API is an internal service the
+worker's network can reach.)
+
     python 5-managed-agents-self-hosted-sandbox/run.py [LOG] [--metrics out.json]
 """
 
@@ -23,6 +30,9 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from common import DEFAULT_LOG
 from common.cma import hosted_client, session_metrics, stream_session
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import private_api  # noqa: E402
 
 OPTION = "5-managed-agents-self-hosted-sandbox"
 HERE = Path(__file__).resolve().parent
@@ -60,8 +70,17 @@ def main() -> None:
     )
     print(f"Session {session.id}\n")
 
-    task = "Triage app.log in your working directory and write report.md."
-    result = stream_session(client, session.id, [{"type": "text", "text": task}])
+    api = private_api.start_in_background()
+    print(f"Private deploy API listening on {private_api.URL} (this machine only)\n")
+    task = (
+        "Triage app.log in your working directory and write report.md. Deploy history is at "
+        f"{private_api.URL}/deploys?service=NAME on the private network. curl it for the top issue's "
+        "service and say in the report whether a deploy lines up with the start of its errors."
+    )
+    try:
+        result = stream_session(client, session.id, [{"type": "text", "text": task}])
+    finally:
+        api.shutdown()
     print(f"\n\nAgent stopped: {result.stop_reason}")
 
     metrics = session_metrics(client, OPTION, session.id, started, result)

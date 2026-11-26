@@ -4,6 +4,11 @@ Every folder here solves the same task: read an application log, find the
 errors and spikes, and write a one-page triage report. Only the way it's built
 changes. Run them side by side and the trade-offs stop being abstract.
 
+Log triage is too small to show what a full agent harness buys you, so options
+2 and 3 also do a second job: **fix the bug behind the top error** in a small
+service ([`sample/payments-svc`](sample/payments-svc/)). Each option's README
+opens with "Choose this when" and names the one factor that decides it.
+
 The examples target a team that **runs all Claude models through Amazon
 Bedrock**, has a Claude Enterprise plan for people and a Claude Platform (Console)
 organization for developers, and wants to know what it takes to run agents
@@ -55,6 +60,23 @@ check the linked pages before you rely on a detail.
 - **On Bedrock, web search and web fetch aren't available** in any option. Give
   agents an internal search tool if they need one.
 
+## Which demo shows which reason
+
+Each demo is built so its output shows the factor that sets its option apart.
+
+| # | Choose it for | What the demo shows | Where to look |
+|---|---|---|---|
+| 1 | A fixed, predictable task | The same facts every run, and the cost and time of 1,000 logs | `run.py --repeat 3` |
+| 2 | A few tools you control, in your own app | A tool that calls your service catalog in-process. Then the code-fix job, where you write about 75 lines of file, edit and test tools, plus their guard rails | `run.py`, `fix.py` |
+| 3 | Open-ended file and shell work, or reusing a Claude Code setup | The same code-fix job with no tool code: built-in tools, permission rules, hooks, budget and turn limits, compaction, and the repo's own CLAUDE.md and skill | `fix.py` |
+| 4 | Nothing to host, many long-running sessions | Start a session, close the terminal, reattach later and catch up. A grader checks the report against a rubric | `run.py --detach`, `--attach` |
+| 5 | Tools that need your private network | The agent curls a deploy history API that only listens on 127.0.0.1, which option 4's container can't reach | `private_api.py`, `run.py` |
+| 6 | Bedrock inference, or full control of the data | Tokens on Bedrock, and the session history read back from your own PostgreSQL | `run.py --history` |
+
+`compare.py` prints a second table with what you host, where the data and
+history live, who bills you, and how many lines of tool and hook code each
+option needed.
+
 ## Which one to pick
 
 - **An AI step inside an app, with known steps** (summarize, classify, draft): option 1.
@@ -84,12 +106,17 @@ pip install -r requirements.txt
 python compare.py --check        # which options are ready, and why not
 python compare.py                # run every ready option on sample/app.log
 python compare.py --only 1,2,3   # just the Bedrock ones
+python compare.py --scenario fix # the code-fix job, on options 2 and 3
 ```
 
 Each option runs as its own process, exactly as you'd run it by hand. The script
 prints a table of wall time, tokens, model calls, tool calls, estimated cost and
-the platform's own reported cost, then saves `out/comparison.json`. Reports land
-in `out/<option>/`.
+the platform's own reported cost, then saves `out/comparison-<scenario>.json`.
+Reports land in `out/<option>/`. A second table shows how each option is built:
+lines of tool code and hook code you wrote (counted between `tool code` and
+`hook code` markers in each script), what you host, where data and history live,
+and the billing path. For the code-fix scenario, the notes under the table say whether
+the fix passed the same model-free check for both options.
 
 What each option needs before `compare.py` will run it:
 
@@ -114,9 +141,11 @@ cost more and vary more between runs.
 ## Repository layout
 
 ```
-common/            shared report spec, log parsing, metrics, Managed Agents client code
+common/            shared report spec, log parsing, metrics, Managed Agents client code,
+                   the code-fix scenario (codefix.py) and a stand-in service catalog
 sample/app.log     400 lines of synthetic logs with a payment timeout spike and a few other faults
-1-... to 6-...     one folder per option, each with run.py and a README
+sample/payments-svc  the service behind that spike, with the bug, its tests, a CLAUDE.md and a skill
+1-... to 6-...     one folder per option, each with run.py and a README; 2 and 3 also have fix.py
 compare.py         runs the options and prints the comparison
 tests/             offline tests: python -m unittest discover tests
 ```
@@ -127,6 +156,13 @@ tests/             offline tests: python -m unittest discover tests
 helpers against the sample, and runs option 2's full agent loop against a fake
 Bedrock endpoint to confirm the tools, tool results and usage counting work.
 It also replays a fake option 4 event stream with two grader passes to check
-the outcome is sent as the kickoff and the grader's tokens are summed.
+the outcome is sent as the kickoff and the grader's tokens are summed, and a
+reattach that must not repeat events.
+
+For the code-fix scenario, the tests confirm the service reproduces the log's
+"after 30000ms" error, that a known good fix passes the check and the unfixed
+code doesn't, that option 2's tools refuse paths outside the workspace and edits
+to settings, and that option 3's hook denies settings edits. Option 5's private
+API is checked too.
 None of the six options has been run against live Bedrock or Managed Agents from
 this repo yet.

@@ -2,6 +2,27 @@
 
 **You run the whole Managed Agents service. Model calls go to Bedrock.**
 
+## Choose this when
+
+**Deciding factor: Bedrock inference, or full control of the data.**
+
+- Model calls must go through Bedrock, under your AWS agreement and billing, and
+  you still want the Managed Agents API.
+- Session history must stay in your accounts. The server stores agents, sessions
+  and history in your PostgreSQL. `run.py --history` reads them back from there.
+- Nothing in a run may reach Anthropic. With Bedrock as the provider, the server
+  doesn't connect to Anthropic.
+
+## Don't choose this when
+
+- You don't want to run a service: cma-server, PostgreSQL, workers, upgrades.
+  Options 4 and 5 run it for you.
+- You need it today without a sales conversation. It's a private beta, through
+  your Anthropic account team.
+- You need features the docs don't confirm for self-hosted yet, such as outcomes.
+
+## How it works
+
 `cma-server` serves the same sessions API as options 4 and 5, runs the agent
 loop, and keeps agents, sessions and history in your PostgreSQL. Your workers run
 the tools. With `inference.provider: bedrock`, the server calls Claude on
@@ -97,6 +118,22 @@ sends the log inside the message as a text document, and the agent saves it to
 `app.log` in its sandbox before it counts anything. The agent replies with the
 report as its last message. For large inputs, put the data where the worker can
 read it instead.
+
+## Where the history lives
+
+After the run, `run.py` reads the session's events back from your server:
+
+```
+History for sesn_..., read from http://127.0.0.1:8400 (stored in your server's PostgreSQL):
+  41 events: 14 agent.tool_use, 14 agent.tool_result, 6 agent.message, ...
+```
+
+(Example output.) `python 6-self-hosted-cma-bedrock/run.py --history sesn_...`
+prints a stored session again later. The
+[data and access page](https://platform.claude.com/docs/en/managed-agents/self-hosted-data-and-access)
+says the server stores agents, sessions and session history in your database,
+and "connects to Anthropic only when that provider is the Claude API". Tokens go
+to Bedrock and show up on your AWS bill.
 
 ## Who runs what
 

@@ -2,6 +2,25 @@
 
 **Anthropic runs the agent loop and the container. You start sessions.**
 
+## Choose this when
+
+**Deciding factor: nothing to host, for many long-running, unattended sessions.**
+
+- You want to start agents from a schedule or a webhook and not run any servers,
+  containers or harness.
+- Sessions run long. The loop and the sandbox run at Anthropic, so your script
+  can start a session and exit (`--detach`) and come back later (`--attach`).
+- You want history, versioned agents, budgets, outcomes graded against a rubric,
+  and a session viewer without building them.
+
+## Don't choose this when
+
+- Model calls must go through Bedrock. Hosted Managed Agents doesn't run there.
+- Anthropic must not process or store the data, or you need ZDR or HIPAA.
+- Tools must reach systems on your private network. That's option 5.
+
+## How it works
+
 You create an agent (model, prompt, tools) and an environment once. Each run is
 a session: upload the log, define an outcome, and follow the event stream. The
 agent uses bash and file tools inside an Anthropic-hosted container, writes
@@ -55,6 +74,31 @@ you can replay the session, and the session's own token counts and list cost.
 
 If you ran the first version of this demo, move `.agent.json` from the repo root
 into this folder.
+
+## Start it, close the terminal, come back
+
+The loop and the sandbox run at Anthropic, so your machine doesn't have to stay
+connected:
+
+```bash
+python 4-managed-agents-cloud/run.py --detach
+# Started. Nothing runs on this machine now: close the terminal if you like.
+# Come back with: python 4-managed-agents-cloud/run.py --attach sesn_...
+
+python 4-managed-agents-cloud/run.py --attach sesn_...
+# [attach] caught up on 37 past events, session is running
+# ...follows it live until it stops, then downloads the report
+```
+
+`--attach` follows the reconnect recipe from the
+[events and streaming docs](https://platform.claude.com/docs/en/managed-agents/events-and-streaming):
+open a new stream, list the event history to learn which event IDs it has seen,
+then follow the stream and skip those. The session ID is also saved to
+`out/4-managed-agents-cloud/last_session.txt`.
+
+Detached runs are unattended. If a tool call needs a person's approval, the
+session waits. `--attach` shows the history but doesn't answer old approval
+requests, so approve it in the Console's session viewer.
 
 ## Outcomes: a grader checks the report
 

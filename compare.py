@@ -4,7 +4,11 @@ Each demo runs in its own process, exactly as you would run it by hand, and
 writes a metrics file to out/<option>/metrics.json. Options whose credentials
 or setup are missing are skipped with the reason.
 
-    python compare.py                 # every option that is ready
+It also prints how each option is built: what you host, where the data and
+session history live, who bills you, and how many lines of tool code you wrote.
+
+    python compare.py                 # every option that is ready, log triage
+    python compare.py --scenario fix  # the code-fix scenario (options 2 and 3)
     python compare.py --only 1,2,3    # just these
     python compare.py --check         # show what would run, run nothing
 """
@@ -14,6 +18,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import subprocess
 import sys
 from dataclasses import dataclass
@@ -70,16 +75,98 @@ class Option:
     number: str
     folder: str
     ready: Callable[[], str | None]
+    you_host: str
+    data_and_history: str
+    billing: str
 
 
 OPTIONS = [
-    Option("1", "1-messages-workflow", aws_ready),
-    Option("2", "2-messages-agent-loop", aws_ready),
-    Option("3", "3-agent-sdk", aws_ready),
-    Option("4", "4-managed-agents-cloud", state_ready("4-managed-agents-cloud", "setup_agent.py")),
-    Option("5", "5-managed-agents-self-hosted-sandbox", state_ready("5-managed-agents-self-hosted-sandbox", "setup.py")),
-    Option("6", "6-self-hosted-cma-bedrock", self_hosted_ready),
+    Option(
+        "1",
+        "1-messages-workflow",
+        aws_ready,
+        you_host="your script",
+        data_and_history="your machine; facts sent to Bedrock",
+        billing="AWS (Bedrock)",
+    ),
+    Option(
+        "2",
+        "2-messages-agent-loop",
+        aws_ready,
+        you_host="your app, loop and tools",
+        data_and_history="your app; tool results sent to Bedrock",
+        billing="AWS (Bedrock)",
+    ),
+    Option(
+        "3",
+        "3-agent-sdk",
+        aws_ready,
+        you_host="SDK process and its workspace",
+        data_and_history="your machine; tool results sent to Bedrock",
+        billing="AWS (Bedrock)",
+    ),
+    Option(
+        "4",
+        "4-managed-agents-cloud",
+        state_ready("4-managed-agents-cloud", "setup_agent.py"),
+        you_host="nothing",
+        data_and_history="Anthropic: files, sandbox, history",
+        billing="Anthropic, or AWS Marketplace (Claude Platform on AWS)",
+    ),
+    Option(
+        "5",
+        "5-managed-agents-self-hosted-sandbox",
+        state_ready("5-managed-agents-self-hosted-sandbox", "setup.py"),
+        you_host="sandbox worker",
+        data_and_history="files on your worker; history at Anthropic",
+        billing="Anthropic, or AWS Marketplace (Claude Platform on AWS)",
+    ),
+    Option(
+        "6",
+        "6-self-hosted-cma-bedrock",
+        self_hosted_ready,
+        you_host="cma-server, PostgreSQL, workers",
+        data_and_history="all yours: your Postgres, your workers",
+        billing="AWS (Bedrock) plus the cma-server license",
+    ),
 ]
+
+SCENARIO_SCRIPTS = {"triage": "run.py", "fix": "fix.py"}
+
+
+def marked_lines(folder: str, script_name: str, kind: str) -> int | None:
+    """Lines of code between "# --- <kind> code: start/end ---" markers in one script.
+
+    Blank lines, comments and docstring-only lines are left out, so the number is
+    the code you'd write, review and maintain.
+    """
+    script = REPO_ROOT / folder / script_name
+    if not script.exists():
+        return None
+    total = 0
+    for text in [script.read_text()]:
+        for block in re.findall(rf"# --- {kind} code: start ---\n(.*?)# --- {kind} code: end ---", text, re.S):
+            body = re.sub(r'"""(?:.|\n)*?"""', "", block)  # drop docstrings
+            total += sum(1 for line in body.splitlines() if line.strip() and not line.strip().startswith("#"))
+    return total
+
+
+def print_build_table(script_name: str) -> None:
+    header = f"{'option':<38} {'tools you wrote':>15} {'hooks':>6}  {'you host':<32} {'data and history':<44} billing"
+    print("\n" + header)
+    print("-" * len(header))
+    for option in OPTIONS:
+        tools = marked_lines(option.folder, script_name, "tool")
+        hooks = marked_lines(option.folder, script_name, "hook")
+        print(
+            f"{option.folder:<38} {'-' if tools is None else tools:>15} {'-' if hooks is None else hooks:>6}  "
+            f"{option.you_host:<32} {option.data_and_history:<44} {option.billing}"
+        )
+    print(
+        f"\ntools you wrote: lines of tool code in each option's {script_name}, without blanks, comments"
+        "\nand docstrings. Options 3 to 6 use built-in tools."
+        "\nhooks: lines of hook code, the guard rails you add on top of built-in tools."
+    )
 
 
 def money(value: float | None) -> str:
@@ -112,6 +199,11 @@ def print_table(rows: list[tuple[Option, RunMetrics | None, str]]) -> None:
             f"{money(metrics.estimated_cost_usd()):>10} {money(metrics.reported_cost_usd):>10}  "
             f"{outcome_cell(metrics)}"
         )
+    noted = [(option, metrics) for option, metrics, _ in rows if metrics and metrics.notes]
+    if noted:
+        print("\nnotes:")
+        for option, metrics in noted:
+            print(f"  {option.folder}: {metrics.notes}")
     print(
         "\nest. cost: tokens at Claude API list price for Claude Opus 5.5, plus $0.08 per session-hour"
         "\nfor options 4 and 5. Bedrock bills at AWS prices. reported: the platform's own number, if any."
@@ -125,12 +217,18 @@ def main() -> None:
     parser.add_argument("log", nargs="?", type=Path, default=DEFAULT_LOG)
     parser.add_argument("--only", help="comma-separated option numbers, for example 1,2,4")
     parser.add_argument("--check", action="store_true", help="report which options are ready, run nothing")
+    parser.add_argument("--scenario", choices=sorted(SCENARIO_SCRIPTS), default="triage", help="which job to run")
     args = parser.parse_args()
+    script_name = SCENARIO_SCRIPTS[args.scenario]
 
     wanted = set(args.only.split(",")) if args.only else {o.number for o in OPTIONS}
     rows: list[tuple[Option, RunMetrics | None, str]] = []
     for option in OPTIONS:
         if option.number not in wanted:
+            continue
+        script = REPO_ROOT / option.folder / script_name
+        if not script.exists():
+            rows.append((option, None, f"skipped: no {args.scenario} scenario for this option"))
             continue
         reason = option.ready()
         if reason:
@@ -140,10 +238,9 @@ def main() -> None:
             rows.append((option, None, "ready"))
             continue
 
-        metrics_path = OUT_DIR / option.folder / "metrics.json"
+        metrics_path = OUT_DIR / option.folder / f"metrics-{args.scenario}.json"
         metrics_path.unlink(missing_ok=True)
         print(f"\n===== {option.folder} =====", flush=True)
-        script = REPO_ROOT / option.folder / "run.py"
         proc = subprocess.run(
             [sys.executable, str(script), str(args.log), "--metrics", str(metrics_path)],
             stdin=subprocess.DEVNULL,  # unattended: any tool approval prompt is denied
@@ -154,9 +251,14 @@ def main() -> None:
         rows.append((option, RunMetrics.load(metrics_path), "ok"))
 
     print_table(rows)
-    results = {o.folder: json.loads((OUT_DIR / o.folder / "metrics.json").read_text()) for o, m, _ in rows if m}
+    print_build_table(script_name)
+    results = {
+        o.folder: json.loads((OUT_DIR / o.folder / f"metrics-{args.scenario}.json").read_text())
+        for o, m, _ in rows
+        if m
+    }
     if results:
-        summary = OUT_DIR / "comparison.json"
+        summary = OUT_DIR / f"comparison-{args.scenario}.json"
         summary.write_text(json.dumps(results, indent=2) + "\n")
         print(f"\nSaved {summary.relative_to(REPO_ROOT)}. Reports are in out/<option>/.")
 

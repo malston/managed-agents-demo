@@ -2,6 +2,24 @@
 
 **Your code decides every step. Claude writes one thing.**
 
+## Choose this when
+
+**Deciding factor: the steps are fixed and you want a predictable cost.**
+
+- You know every step ahead of time, and code can do all of them except the writing.
+- You'll run it at volume and need to quote the cost. One model call per log,
+  no loop, so 1,000 logs cost 1,000 times one log. The script prints that projection.
+- You want the same inputs every run. Code computes the facts, so they're identical
+  each time. Only the wording of the report changes.
+
+## Don't choose this when
+
+- The next step depends on what the model finds, for example "dig into the top error".
+  That's a loop, which is option 2 or 3.
+- The job needs files or a shell. This option has no tools.
+
+## How it works
+
 Python reads the log and computes all the numbers: counts per level and
 service, grouped error patterns, error spikes. Claude gets that small JSON
 summary in one request and writes the report. Claude has no tools and makes no
@@ -36,6 +54,23 @@ python 1-messages-workflow/run.py /path/to/your.log
 
 The report goes to `out/1-messages-workflow/report.md`, and the script prints
 time, tokens and an estimated cost.
+
+## What the output shows
+
+Each run prints a line like this, then the report, then a projection:
+
+```
+Run 1: 400 lines, facts 3f9c1a2b7d40 (6,812 chars), report 91be03c4aa17, 2,950 in / 610 out, 9.8s, $0.0240
+Run 2: 400 lines, facts 3f9c1a2b7d40 (6,812 chars), report 5d2e8f11c0b9, 2,950 in / 598 out, 9.1s, $0.0238
+
+1,000 logs like this: about $23.90 and 158 minutes one at a time (1 model call each, no tools)
+```
+
+(The numbers above are an example, not a measured run.) With `--repeat 3`, the
+facts fingerprint is the same on every run because code computed them. The
+report fingerprint changes because Claude words it a little differently each
+time. The input token count stays the same too, which is why the cost is easy
+to predict. The projection is linear: one call per log, no loop.
 
 ## Requirements
 

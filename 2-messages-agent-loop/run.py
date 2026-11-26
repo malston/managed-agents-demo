@@ -6,6 +6,11 @@ results back, and repeat until Claude stops. Your process runs every tool,
 so the log never leaves your machine except as tool results.
 
 The tools are narrow and read-only on purpose. Claude can't run a shell here.
+One tool, lookup_owner, calls the company's service catalog in-process
+(common/catalog.py), the way an agent inside your own app reaches your own
+APIs. That's the reason to pick this option: a few tools you control.
+
+For a job that needs real file and shell work, see fix.py next to this file.
 
     python 2-messages-agent-loop/run.py [LOG] [--region us-east-1] [--metrics out.json]
 """
@@ -25,7 +30,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from anthropic import AnthropicBedrockMantle, beta_tool
 from anthropic.lib.tools import BetaFunctionTool
 
-from common import DEFAULT_LOG, MODEL_BEDROCK_MANTLE, OUT_DIR, REPORT_SPEC, logtools
+from common import DEFAULT_LOG, MODEL_BEDROCK_MANTLE, OUT_DIR, REPORT_SPEC, catalog, logtools
 from common.metrics import RunMetrics
 
 OPTION = "2-messages-agent-loop"
@@ -33,6 +38,8 @@ MAX_ITERATIONS = 25  # hard stop on model calls, so a confused loop can't run fo
 
 SYSTEM_PROMPT = f"""You are a log triage engineer. You can't see the log directly.
 Use the tools to explore it: start with log_overview, then count and search.
+For each top issue, call lookup_owner and name the owning team and on-call
+channel in Suggested next steps.
 
 {REPORT_SPEC}
 
@@ -40,8 +47,9 @@ When the report is ready, save it with write_report, then reply with a
 two-sentence summary and stop."""
 
 
+# --- tool code: start ---
 def make_tools(lines: list[logtools.LogLine], report_path: Path) -> list[BetaFunctionTool[Any]]:
-    """Wrap the plain functions in common/logtools.py as tools Claude can call."""
+    """Wrap the plain functions in common/logtools.py, and your service catalog, as tools."""
 
     @beta_tool
     def log_overview() -> str:
@@ -77,6 +85,18 @@ def make_tools(lines: list[logtools.LogLine], report_path: Path) -> list[BetaFun
         return json.dumps(logtools.spikes(lines))
 
     @beta_tool
+    def lookup_owner(service: str) -> str:
+        """Look up the team, on-call channel and runbook for a service in the company service catalog.
+
+        Args:
+            service: Service name as it appears in the log, for example payments-svc.
+        """
+        try:
+            return json.dumps(catalog.owner(service))
+        except KeyError:
+            return f"Error: {service} is not in the service catalog."
+
+    @beta_tool
     def write_report(markdown: str) -> str:
         """Save the finished report.
 
@@ -87,7 +107,10 @@ def make_tools(lines: list[logtools.LogLine], report_path: Path) -> list[BetaFun
         report_path.write_text(markdown + "\n")
         return f"Saved {len(markdown)} characters."
 
-    return [log_overview, count_by, search_log, error_spikes, write_report]
+    return [log_overview, count_by, search_log, error_spikes, lookup_owner, write_report]
+
+
+# --- tool code: end ---
 
 
 def run(client: AnthropicBedrockMantle, log: Path, model: str, report_path: Path) -> RunMetrics:

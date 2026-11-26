@@ -2,6 +2,25 @@
 
 **Anthropic runs the agent loop. Your worker runs the tools, next to your data.**
 
+## Choose this when
+
+**Deciding factor: tools that need your private network, with Anthropic running the rest.**
+
+- The agent has to reach internal systems: a database, an internal API, a file
+  share. Your worker runs the tools inside your network, so it can. This demo's
+  agent curls a deploy history API that listens on 127.0.0.1 only
+  ([`private_api.py`](private_api.py)). Option 4's container can't reach it.
+- Files should stay on your hosts. Only tool inputs and outputs go to Anthropic.
+- You still want Anthropic to run the loop, store history and give you the session viewer.
+
+## Don't choose this when
+
+- Model calls must go through Bedrock, or session history must stay in your
+  accounts. That's option 6.
+- You don't want to run and isolate worker hosts. Option 4 needs none.
+
+## How it works
+
 Same agent and sessions API as option 4. The difference is the environment:
 `{"type": "self_hosted"}`. A worker you run long-polls Anthropic's work queue
 and executes the agent's bash and file tools on your machine. All connections
@@ -52,6 +71,22 @@ python 5-managed-agents-self-hosted-sandbox/run.py
 `run.py` checks that a worker is polling before it starts, copies the log into
 `workspace/`, and reads `workspace/report.md` when the agent stops. There's no
 download step, because the file never left your machine.
+
+## Reaching a private service
+
+`run.py` starts [`private_api.py`](private_api.py), a deploy history API that
+listens on `127.0.0.1:8765` only. The task asks the agent to curl it for the top
+issue's service and say whether a deploy lines up with the first errors. It
+does: payments-svc 2.14.0 shipped at 09:30:40, and the timeouts start at 09:31:38.
+
+The call works because the agent's bash tool runs in your worker. The docs say
+it is "a real shell with the worker process's permissions and network access".
+Option 4's container is on Anthropic's network, and this API isn't reachable
+from there.
+
+The demo assumes the worker runs on the same machine as `run.py`. In real use,
+the API is an internal service, and the worker runs where its network can reach
+it. Don't give the worker more network than the job needs.
 
 ## Requirements
 
