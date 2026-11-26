@@ -1,89 +1,130 @@
-# Managed Agents demo: log triage
+# One job, six ways to build it with Claude
 
-A small, working example of [Claude Managed Agents](https://platform.claude.com/docs/en/managed-agents/overview).
-You give it an application log. A Claude agent reads the log inside an
-Anthropic-hosted sandbox, counts errors with `grep`/`awk`, and writes a short
-Markdown report that the script downloads for you.
+Every folder here solves the same task: read an application log, find the
+errors and spikes, and write a one-page triage report. Only the way it's built
+changes. Run them side by side and the trade-offs stop being abstract.
 
-Anthropic runs the agent loop and the sandbox. Your code only creates the
-agent once, starts a session per run, and streams events.
+The examples target a team that **runs all Claude models through Amazon
+Bedrock**, has a Claude Enterprise plan for people and a Claude Platform (Console)
+organization for developers, and wants to know what it takes to run agents
+unattended on Claude Managed Agents (CMA).
 
-## How it works
+All facts were checked against Anthropic's and AWS's docs on **2026-11-26**.
+Managed Agents is in beta, and self-hosted Managed Agents is a private beta, so
+check the linked pages before you rely on a detail.
 
-```
-setup_agent.py  (run once)        run.py  (run as often as you like)
-  create environment ──┐            upload log  ──> Files API
-  create agent ────────┴─> .agent.json ──> create session (pinned agent version, $2 budget)
-                                           stream events  <── agent uses bash/read/write in sandbox
-                                           download /mnt/session/outputs/report.md -> out/
-```
+## The six options
 
-- **Environment**: a cloud sandbox with limited network access (package managers only).
-- **Agent**: Claude Opus 5.5 (`claude-opus-5-5`), a short system prompt, and the
-  built-in agent toolset. Web search and web fetch are off because the job only
-  needs the local file.
-- **Session**: one run. The log is mounted read-only at
-  `/mnt/session/uploads/app.log`. Anything the agent writes to
-  `/mnt/session/outputs/` can be downloaded after the run.
+| # | Folder | You write | Agent loop runs in | Tools run on | Model calls go to | Session history lives in |
+|---|---|---|---|---|---|---|
+| 1 | [`1-messages-workflow`](1-messages-workflow/) | Every step. Claude writes the text | Your code (no loop) | No tools | Bedrock (Mantle) | Nowhere |
+| 2 | [`2-messages-agent-loop`](2-messages-agent-loop/) | The tools | Your process (SDK tool runner) | Your process | Bedrock (Mantle) | Your process memory |
+| 3 | [`3-agent-sdk`](3-agent-sdk/) | A prompt and a permission policy | Your machine (Agent SDK) | Your machine | Bedrock (Mantle) | Files on your machine |
+| 4 | [`4-managed-agents-cloud`](4-managed-agents-cloud/) | Agent config, then sessions | Anthropic | Anthropic's container | Claude API or Claude Platform on AWS | Anthropic |
+| 5 | [`5-managed-agents-self-hosted-sandbox`](5-managed-agents-self-hosted-sandbox/) | Agent config, sessions, a worker | Anthropic | Your worker | Claude API or Claude Platform on AWS | Anthropic |
+| 6 | [`6-self-hosted-cma-bedrock`](6-self-hosted-cma-bedrock/) | Agent config, sessions, plus you run the service | Your `cma-server` | Your workers | Bedrock (InvokeModel) | Your PostgreSQL |
 
-## Prerequisites
+| # | Runs on Bedrock? | Anthropic processes the data? | ZDR eligible | You operate | Unattended runs | Status |
+|---|---|---|---|---|---|---|
+| 1 | Yes | No, AWS does | Bedrock terms | Your app | Your scheduler | GA |
+| 2 | Yes | No, AWS does | Bedrock terms | Your app and the loop | Your scheduler | Tool runner is beta |
+| 3 | Yes | No, AWS does | Bedrock terms | The harness host and its isolation | Your scheduler | Released, 0.x versions |
+| 4 | **No** | Yes, and stores history | No | Nothing | Scheduled deployments, webhooks | Beta |
+| 5 | **No** | Yes, and stores history | No | Worker hosts | Scheduled deployments, webhooks | Beta |
+| 6 | Yes | No, with Bedrock as provider | Follows provider terms | Everything | Your scheduler | Private beta |
 
-- Python 3.10 or newer
-- An Anthropic API key with Managed Agents access (the API is in beta)
+## What to remember
 
-## Run it
+- **Hosted Managed Agents isn't on Bedrock.** Options 4 and 5 run on the Claude
+  API or on Claude Platform on AWS (Anthropic-operated, IAM, PrivateLink, AWS
+  Marketplace billing). Claude Platform on AWS is a separate product from Bedrock,
+  with its own Anthropic organization and pricing.
+- **The only way to keep Managed Agents on Bedrock is option 6**, self-hosted,
+  which you get through your Anthropic account team.
+- **Options 4, 5 and 6 share one API.** Agent definitions and session code move
+  between them by changing the base URL and credentials. See [`common/cma.py`](common/cma.py).
+- **The further down the list, the less code you write and the more you hand
+  over or operate.** Options 1 and 2 keep everything in your app. Option 4 hands
+  the whole runtime to Anthropic. Option 6 hands nothing over and makes you run all of it.
+- **Bash is the risk line.** Options 1 and 2 have no shell. Options 3, 5 and 6
+  run a real shell on your infrastructure, so isolation is your job. Option 4
+  runs it in Anthropic's container.
+- **Bedrock has two endpoints.** Options 1 to 3 use `bedrock-mantle` (Messages API
+  shape, `anthropic.` model IDs, `bedrock-mantle:*` IAM). Option 6's server uses
+  InvokeModel (`us.anthropic.` profiles, `bedrock:*` IAM).
+- **On Bedrock, web search and web fetch aren't available** in any option. Give
+  agents an internal search tool if they need one.
+
+## Which one to pick
+
+- **An AI step inside an app, with known steps** (summarize, classify, draft): option 1.
+- **An agent inside your own app, calling your own systems:** option 2.
+- **A coding or file-heavy agent on your infrastructure, Bedrock only:** option 3.
+- **An unattended agent where Anthropic hosting the data is acceptable:** option 4.
+  It has the most features and the least to run.
+- **The same, but the agent must touch systems inside your network:** option 5.
+- **Agents with history and data that must stay in your accounts, Bedrock only:** option 6.
+
+### From a knowledge worker's prototype to an unattended run
+
+People with Claude Enterprise seats can prototype an agent in Claude Code: a
+prompt, a folder, a few tools. That maps well to option 3, since the Agent SDK
+is the same harness. When engineering takes it over to run unattended, the
+prompt and tool list become a Managed Agents agent definition (option 4, 5 or 6)
+kept in git and synced with `ant apply`, and a schedule starts the sessions. The
+agent file in [`6-self-hosted-cma-bedrock/log-triage-agent.md`](6-self-hosted-cma-bedrock/log-triage-agent.md)
+shows that format.
+
+## Run the comparison
 
 ```bash
 python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
-export ANTHROPIC_API_KEY=sk-ant-...
 
-python setup_agent.py          # once: creates the environment and agent, writes .agent.json
-python run.py                  # triages sample/app.log
-python run.py /path/to/your.log
+python compare.py --check        # which options are ready, and why not
+python compare.py                # run every ready option on sample/app.log
+python compare.py --only 1,2,3   # just the Bedrock ones
 ```
 
-You will see the agent's tool calls and messages as they happen. When it stops,
-the report is saved to `out/report.md` and the script prints the session cost.
-The script also prints a Console link where you can replay the whole session.
+Each option runs as its own process, exactly as you'd run it by hand. The script
+prints a table of wall time, tokens, model calls, tool calls, estimated cost and
+the platform's own reported cost, then saves `out/comparison.json`. Reports land
+in `out/<option>/`.
 
-If you used `ant auth login` instead of an API key, skip the `export`; the SDK
-picks up the profile.
+What each option needs before `compare.py` will run it:
 
-## Change the agent
-
-Edit `SYSTEM_PROMPT` or `TOOLS` in `setup_agent.py`, then run:
-
-```bash
-python setup_agent.py --update
-```
-
-This creates a new agent version and records it in `.agent.json`. Sessions
-already running keep the version they started with.
-
-## Tool approvals
-
-The toolset uses the `auto` permission policy. The server approves low-risk
-calls on its own. When it can't decide, `run.py` asks you `Allow? [y/N]` in the
-terminal. With no terminal attached, it denies.
-
-## Cost
-
-- Tokens at Claude Opus 5.5 rates, plus session runtime at $0.08 per hour.
-- Each session has a hard budget of $2.00 at list price (`BUDGET_CENTS` in
-  `run.py`). If the agent hits it, the session pauses instead of spending more.
-- A run on the sample log should cost well under that.
-
-## Cleanup
-
-Sessions, agents and environments stay in your account until you remove them.
-List and remove them from the [Console](https://platform.claude.com), or with
-`client.beta.sessions.delete(...)`. Archiving is permanent.
-
-## Files
-
-| File | What it does |
+| Option | Needs |
 |---|---|
-| `setup_agent.py` | Creates the environment and agent once, saves IDs to `.agent.json` |
-| `run.py` | Uploads a log, runs a session, streams events, downloads the report |
-| `sample/app.log` | 400 lines of synthetic logs with a payment timeout spike and a few other faults |
+| 1, 2, 3 | AWS credentials with access to `anthropic.claude-opus-5-5` on Claude in Amazon Bedrock |
+| 4 | `ANTHROPIC_API_KEY` (or `CMA_PLATFORM=aws`), then `python 4-managed-agents-cloud/setup_agent.py` |
+| 5 | Same as 4 with `setup.py`, plus a worker running in another terminal |
+| 6 | A running `cma-server`, `CMA_SELF_HOSTED_URL` and `CMA_SELF_HOSTED_API_KEY` |
+
+**About the cost column.** The estimate prices tokens at Claude API list price
+for Claude Opus 5.5 ($4 in, $20 out, $5 cache write, $0.20 cache read per million
+tokens) and adds $0.08 per running session-hour for options 4 and 5. Bedrock bills
+at AWS's prices, and regional Bedrock endpoints cost 10% more than global ones, so
+for Bedrock options treat the number as a yardstick. Edit `common/metrics.py` to
+use your rates. Self-hosted Managed Agents has a separately quoted license.
+
+Expect the order to be roughly 1, then 2, then the rest, for both time and
+tokens. Options 3 to 6 use real shell tools and read more of the log, so they
+cost more and vary more between runs.
+
+## Repository layout
+
+```
+common/            shared report spec, log parsing, metrics, Managed Agents client code
+sample/app.log     400 lines of synthetic logs with a payment timeout spike and a few other faults
+1-... to 6-...     one folder per option, each with run.py and a README
+compare.py         runs the options and prints the comparison
+tests/             offline tests: python -m unittest discover tests
+```
+
+## Tests
+
+`python -m unittest discover tests` runs without credentials. It checks the log
+helpers against the sample, and runs option 2's full agent loop against a fake
+Bedrock endpoint to confirm the tools, tool results and usage counting work.
+None of the six options has been run against live Bedrock or Managed Agents from
+this repo yet.

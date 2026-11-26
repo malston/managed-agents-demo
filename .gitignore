@@ -3,3 +3,5 @@ __pycache__/
 .agent.json
 out/
 .mypy_cache/
+5-managed-agents-self-hosted-sandbox/workspace/
+*.egg-info/

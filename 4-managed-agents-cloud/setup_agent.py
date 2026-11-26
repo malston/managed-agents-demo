@@ -7,26 +7,27 @@ system prompt or tools as a new agent version.
 
 import argparse
 import json
+import sys
 from pathlib import Path
 
-import anthropic
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
 from anthropic.types.beta import BetaManagedAgentsAgentToolset20260401Params
 
-STATE_FILE = Path(".agent.json")
-MODEL = "claude-opus-5-5"
+from common import MODEL_CLAUDE_API as MODEL
+from common import REPORT_SPEC
+from common.cma import hosted_client
 
-SYSTEM_PROMPT = """You are a log triage engineer.
+STATE_FILE = Path(__file__).resolve().parent / ".agent.json"
 
-You get one application log file. Your job:
-1. Read the log with the bash and file tools. Use grep, awk, sort and uniq to count things.
-   Do not guess numbers; compute them.
-2. Group errors and warnings by service and by message pattern.
-3. Find the time windows where errors spike.
-4. Write a short Markdown report to /mnt/session/outputs/report.md with these sections:
-   Summary, Top issues (a table with service, pattern, count, first seen, last seen),
-   Error spikes, Suggested next steps.
-Keep the report under one page. Use plain, simple language.
-When the report is written, reply with a two-sentence summary and stop."""
+SYSTEM_PROMPT = f"""You are a log triage engineer. The log is at
+/mnt/session/uploads/app.log. Read it with the bash and file tools, and count
+things with grep, awk, sort and uniq.
+
+{REPORT_SPEC}
+
+Write the report to /mnt/session/outputs/report.md, then reply with a
+two-sentence summary and stop."""
 
 TOOLS: list[BetaManagedAgentsAgentToolset20260401Params] = [
     {
@@ -47,7 +48,7 @@ def main() -> None:
     parser.add_argument("--update", action="store_true", help="push prompt/tool changes as a new agent version")
     args = parser.parse_args()
 
-    client = anthropic.Anthropic()
+    client = hosted_client()
 
     if STATE_FILE.exists():
         state = json.loads(STATE_FILE.read_text())

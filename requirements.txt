@@ -1,1 +1,5 @@
-anthropic>=2.14.0
+# bedrock: Claude in Amazon Bedrock client (demos 1, 2)
+# aws:     Claude Platform on AWS client, only if you set CMA_PLATFORM=aws (demos 4, 5)
+anthropic[bedrock,aws]>=2.14.0
+# Agent SDK (demo 3). Bundles the Claude Code CLI it drives.
+claude-agent-sdk>=0.2.189
